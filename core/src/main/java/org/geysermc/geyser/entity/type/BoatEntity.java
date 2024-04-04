@@ -38,6 +38,8 @@ import org.geysermc.geyser.entity.EntityDefinitions;
 import org.geysermc.geyser.session.GeyserSession;
 import org.geysermc.geyser.util.InteractionResult;
 import org.geysermc.geyser.util.InteractiveTag;
+import org.geysermc.geyser.inventory.GeyserItemStack;
+import org.geysermc.geyser.inventory.item.StoredItemMappings;
 
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -190,6 +192,7 @@ public class BoatEntity extends Entity {
     @Override
     public InteractionResult interact(Hand hand) {
         if (session.isSneaking()) {
+	    if (leashHolderBedrockId == session.getPlayerEntity().getGeyserId()) { return InteractionResult.SUCCESS; }
             return InteractionResult.PASS;
         } else {
             // TODO: the client also checks for "out of control" ticks
@@ -230,4 +233,7 @@ public class BoatEntity extends Entity {
         packet.setRowingTime(rowTime);
         session.sendUpstreamPacket(packet);
     }
+
+    protected boolean canBeLeashed() { return !this.isNotLeashed(); }
+    public boolean isNotLeashed() { return leashHolderBedrockId == -1L; }
 }
