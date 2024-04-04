@@ -168,6 +168,17 @@ public class BoatEntity extends Entity {
     @Override
     protected InteractiveTag testInteraction(Hand hand) {
         if (session.isSneaking()) {
+            if(leashHolderBedrockId == session.getPlayerEntity().getGeyserId()) { 
+	            return InteractiveTag.REMOVE_LEASH;
+            }
+            else
+            {
+	            GeyserItemStack itemStack = session.getPlayerInventory().getItemInHand(hand);
+	            StoredItemMappings storedItems = session.getItemMappings().getStoredItems();
+	            if (itemStack.getJavaId() == storedItems.lead() && canBeLeashed()) {
+		            return InteractiveTag.LEASH;
+	            }
+            }
             return InteractiveTag.NONE;
         } else if (passengers.size() < 2) {
             return InteractiveTag.BOARD_BOAT;
